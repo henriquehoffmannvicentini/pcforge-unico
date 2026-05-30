@@ -1,0 +1,70 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: pcforge_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: TechAcademy5
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./TechAcademy5back
+      dockerfile: Dockerfile
+    container_name: pcforge_backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./TechAcademy5back/.env
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: TechAcademy5
+      DB_USER: root
+      DB_PASSWORD: rootpassword
+      NODE_ENV: development
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+    volumes:
+      - ./TechAcademy5back/uploads:/app/uploads
+
+  frontend:
+    build:
+      context: ./TechAcademy5front
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:3000
+    container_name: pcforge_frontend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - HOST=0.0.0.0
+      - REACT_APP_API_URL=http://localhost:3000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge
