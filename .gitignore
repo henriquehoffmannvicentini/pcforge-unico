@@ -24,3 +24,6 @@ TechAcademy5back/uploads
 
 # Docker
 docker-compose.override.yml
+
+# local HTTPS certificate exports
+certs/*.pfx
