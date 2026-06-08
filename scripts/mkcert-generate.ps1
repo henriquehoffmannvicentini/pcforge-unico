@@ -3,17 +3,17 @@ Script para gerar certificados TLS de desenvolvimento usando mkcert.
 Uso: execute na raiz do repositório com PowerShell (Admin se necessário).
 Requisitos: mkcert instalado (https://github.com/FiloSottile/mkcert)
 
-Este script cria `nginx/certs/server.crt` e `nginx/certs/server.key`.
+This script creates `certs/pcforge.local.crt` and `certs/pcforge.local.key`.
 #>
 
 param()
 
 Set-StrictMode -Version Latest
 
-$certDir = Join-Path -Path $PSScriptRoot -ChildPath "..\nginx\certs"
+$certDir = Join-Path -Path $PSScriptRoot -ChildPath "..\certs"
 $certDir = Resolve-Path -Path $certDir -ErrorAction SilentlyContinue | ForEach-Object { $_.Path } 
 if (-not $certDir) {
-  $certDir = Join-Path -Path $PSScriptRoot -ChildPath "..\nginx\certs"
+  $certDir = Join-Path -Path $PSScriptRoot -ChildPath "..\certs"
   New-Item -ItemType Directory -Path $certDir -Force | Out-Null
 }
 
@@ -33,8 +33,8 @@ function Exec-Mkcert {
   $crt = Join-Path $certDir "server.crt"
   $key = Join-Path $certDir "server.key"
 
-  Write-Host "Gerando certificados para: localhost, 127.0.0.1, meuapp.local"
-  mkcert -cert-file $crt -key-file $key localhost 127.0.0.1 meuapp.local
+  Write-Host "Gerando certificados para: localhost, 127.0.0.1, pcforge.local"
+  mkcert -cert-file $crt -key-file $key localhost 127.0.0.1 pcforge.local
 
   if (Test-Path $crt -and Test-Path $key) {
     Write-Host "Certificados gerados com sucesso:" -ForegroundColor Green

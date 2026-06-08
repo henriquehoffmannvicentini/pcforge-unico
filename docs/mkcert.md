@@ -17,21 +17,21 @@ Passos rápidos:
 mkcert -install
 ```
 
-3. Gere os certificados na pasta `nginx/certs` (a partir da raiz do repo):
+3. Gere os certificados na pasta `certs` (a partir da raiz do repo):
 
 ```powershell
-mkcert -cert-file nginx/certs/server.crt -key-file nginx/certs/server.key localhost 127.0.0.1 meuapp.local
+mkcert -cert-file certs/pcforge.local.crt -key-file certs/pcforge.local.key localhost 127.0.0.1 pcforge.local
 ```
 
 > Atenção: o fallback Docker/OpenSSL gera HTTPS, mas pode continuar a mostrar aviso de site não seguro. Para remover esse aviso, instale `mkcert` e use o certificado gerado por ele.
 
-4. Se quiser usar um host local customizado como `meuapp.local`, adicione esta linha ao seu `hosts`:
+4. Para usar o host local `pcforge.local`, adicione esta linha ao seu `hosts`:
 
 - Windows: `C:\Windows\System32\drivers\etc\hosts`
 - Linux / macOS: `/etc/hosts`
 
 ```text
-127.0.0.1 meuapp.local
+127.0.0.1 pcforge.local
 ```
 
 5. Verifique que os arquivos foram criados:
