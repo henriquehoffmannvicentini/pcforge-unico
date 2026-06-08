@@ -19,9 +19,14 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx"
+    ,
+    "types": ["node"]
   },
   "include": [
-    "src"
+    "src",
+    "playwright.config.ts",
+    "e2e/**/*.ts",
+    "e2e/**/*.tsx"
   ],
   "exclude": [
     "node_modules"
