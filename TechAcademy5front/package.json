@@ -25,7 +25,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:install": "npx playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.35.0"
   },
   "eslintConfig": {
     "extends": [
