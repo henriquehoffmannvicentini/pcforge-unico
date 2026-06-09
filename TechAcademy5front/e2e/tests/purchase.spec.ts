@@ -34,7 +34,7 @@ test('fluxo de compra: checkout cria pedido e redireciona para pagamento', async
     }
   });
 
-  let pagamentoInitPoint = null;
+  let pagamentoInitPoint: string | null = null;
   await page.route('**/pagamentos/mercado-pago/pedido/*/preference', (route) => {
     pagamentoInitPoint = 'https://mp.example/checkout/999';
     route.fulfill({
