@@ -1,0 +1,80 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: pcforge_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./TechAcademy5back
+      dockerfile: Dockerfile
+    container_name: pcforge_backend
+    restart: unless-stopped
+    # backend não expõe porta no host; proxy (nginx) fará o roteamento
+    env_file:
+      - ./TechAcademy5back/.env
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      NODE_ENV: ${NODE_ENV}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+    volumes:
+      - ./TechAcademy5back/uploads:/app/uploads
+
+  frontend:
+    build:
+      context: ./TechAcademy5front
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ""
+    container_name: pcforge_frontend
+    restart: unless-stopped
+    environment:
+      - PORT=3001
+      - HOST=0.0.0.0
+      - REACT_APP_API_URL=
+    depends_on:
+      - backend
+    networks:
+      - app-network
+  nginx:
+    image: nginx:alpine
+    container_name: pcforge_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

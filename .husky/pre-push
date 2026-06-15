@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+echo "Running pre-push: backend tests"
+cd TechAcademy5back || exit 1
+npm test
+RET=$?
+if [ $RET -ne 0 ]; then
+  echo "Tests failed (pre-push). Aborting push."
+  exit $RET
+fi
+exit 0
