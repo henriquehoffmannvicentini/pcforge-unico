@@ -27,3 +27,9 @@ docker-compose.override.yml
 
 # local HTTPS certificate exports
 certs/*.pfx
+
+# Build / gerados
+TechAcademy5back/dist/
+TechAcademy5back/coverage/
+TechAcademy5back/uploads/
+TechAcademy5front/test-results/
