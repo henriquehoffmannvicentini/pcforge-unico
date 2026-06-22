@@ -23,6 +23,8 @@ mkcert -install
 mkcert -cert-file certs/pcforge.local.crt -key-file certs/pcforge.local.key localhost 127.0.0.1 pcforge.local
 ```
 
+Importante: os arquivos gerados em `certs/` não devem ser versionados. O repositório ignora `certs/` por padrão — se você encontrar chaves/certificados no repositório, remova-os e gere localmente.
+
 > Atenção: o fallback Docker/OpenSSL gera HTTPS, mas pode continuar a mostrar aviso de site não seguro. Para remover esse aviso, instale `mkcert` e use o certificado gerado por ele.
 
 4. Para usar o host local `pcforge.local`, adicione esta linha ao seu `hosts`:

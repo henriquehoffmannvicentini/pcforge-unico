@@ -27,9 +27,19 @@ docker-compose.override.yml
 
 # local HTTPS certificate exports
 certs/*.pfx
+<<<<<<< HEAD
 
 # Build / gerados
 TechAcademy5back/dist/
 TechAcademy5back/coverage/
 TechAcademy5back/uploads/
 TechAcademy5front/test-results/
+=======
+# local HTTPS certificates (do not commit private keys or certs)
+certs/
+certs/*.key
+certs/*.crt
+
+# frontend test artifacts
+TechAcademy5front/test-results/
+>>>>>>> d582cb3 (fix: corrigir healthcheck do MySQL, adicionar testes E2E faltantes e configurar pre-push para rodar E2E)

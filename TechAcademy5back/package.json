@@ -6,6 +6,7 @@
   "scripts": {
     "start": "ts-node-dev --respawn src/index.ts",
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
+    "prepare": "husky install",
     "lint": "eslint --ext .ts src",
     "test": "jest",
     "test:coverage": "jest --coverage",
@@ -46,5 +47,12 @@
     "typescript": "^5.9.3",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.0"
+  }
+  ,
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
