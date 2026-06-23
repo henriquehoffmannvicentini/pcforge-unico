@@ -51,6 +51,7 @@ services:
     environment:
       - PORT=3001
       - HOST=0.0.0.0
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true
       - REACT_APP_API_URL=${REACT_APP_API_URL}
     depends_on:
       - backend
