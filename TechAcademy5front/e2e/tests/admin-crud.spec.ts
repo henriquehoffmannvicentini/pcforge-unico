@@ -1,40 +1,61 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('CRUD Admin de produtos e categorias', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('token', 'admin-token');
+      window.localStorage.setItem(
+        'cliente',
+        JSON.stringify({ id_cliente: 1, nome: 'Admin Teste', email: 'admin@teste.com', admin: true })
+      );
+    });
+    page.on('dialog', (dialog) => dialog.accept());
+  });
+
   test('CRUD de categorias completa', async ({ page }) => {
-    await page.goto('/admin');
+    let categorias = [];
 
     await page.route('**/categorias', (route) => {
       if (route.request().method() === 'GET') {
         route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify([]),
+          body: JSON.stringify(categorias),
         });
         return;
       }
       if (route.request().method() === 'POST') {
+        categorias = [{ id_categoria: 123, nome: 'Monitores', descricao: 'Monitores para gamers' }];
         route.fulfill({
           status: 201,
           contentType: 'application/json',
-          body: JSON.stringify({ id_categoria: 123, nome: 'Monitores', descricao: 'Monitores para gamers' }),
+          body: JSON.stringify(categorias[0]),
         });
         return;
       }
+      route.continue();
+    });
+
+    await page.route('**/categorias/*', (route) => {
       if (route.request().method() === 'PUT') {
+        categorias = [{ id_categoria: 123, nome: 'Monitores Atualizados', descricao: 'Monitores para jogos' }];
         route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ id_categoria: 123, nome: 'Monitores Atualizados', descricao: 'Monitores para jogos' }),
+          body: JSON.stringify(categorias[0]),
         });
         return;
       }
       if (route.request().method() === 'DELETE') {
+        categorias = [];
         route.fulfill({ status: 204 });
         return;
       }
       route.continue();
     });
+
+    await page.goto('/admin');
+    await page.click('button:has-text("Categorias")');
 
     await page.fill('input[name="nome"]', 'Monitores');
     await page.fill('textarea[name="descricao"]', 'Monitores para gamers');
@@ -54,8 +75,6 @@ test.describe('CRUD Admin de produtos e categorias', () => {
   });
 
   test('CRUD de produtos completo', async ({ page }) => {
-    await page.goto('/admin');
-
     await page.route('**/categorias', (route) => {
       route.fulfill({
         status: 200,
@@ -65,21 +84,24 @@ test.describe('CRUD Admin de produtos e categorias', () => {
     });
 
     const produtoId = 321;
+    let produtos = [];
+
     await page.route('**/produtos', async (route) => {
       const req = route.request();
       if (req.method() === 'GET') {
         route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify([]),
+          body: JSON.stringify(produtos),
         });
         return;
       }
       if (req.method() === 'POST') {
+        produtos = [{ id_produto: produtoId, nome: 'RTX 4070', descricao: 'Placa para jogos', preco: 4500, id_categoria: 1, estoque: 10, destaque: false }];
         route.fulfill({
           status: 201,
           contentType: 'application/json',
-          body: JSON.stringify({ id_produto: produtoId, nome: 'RTX 4070', descricao: 'Placa para jogos', preco: 4500, id_categoria: 1, estoque: 10, destaque: false }),
+          body: JSON.stringify(produtos[0]),
         });
         return;
       }
@@ -89,19 +111,23 @@ test.describe('CRUD Admin de produtos e categorias', () => {
     await page.route('**/produtos/*', async (route) => {
       const req = route.request();
       if (req.method() === 'PUT') {
+        produtos = [{ id_produto: produtoId, nome: 'RTX 4070 Super', descricao: 'Placa para jogos atualizada', preco: 4700, id_categoria: 1, estoque: 15, destaque: false }];
         route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ id_produto: produtoId, nome: 'RTX 4070 Super', descricao: 'Placa para jogos atualizada', preco: 4700, id_categoria: 1, estoque: 15, destaque: false }),
+          body: JSON.stringify(produtos[0]),
         });
         return;
       }
       if (req.method() === 'DELETE') {
+        produtos = [];
         route.fulfill({ status: 204 });
         return;
       }
       route.continue();
     });
+
+    await page.goto('/admin');
 
     await page.fill('input[name="nome"]', 'RTX 4070');
     await page.fill('textarea[name="descricao"]', 'Placa para jogos');

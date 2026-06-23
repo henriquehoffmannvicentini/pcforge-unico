@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { authMiddleware, adminMiddleware, selfOrAdminMiddleware } from "../config/auth.middleware";
 import jwt from "jsonwebtoken";
+import type { JwtPayload } from "jsonwebtoken";
 import { getJwtSecret, TokenPayload } from "../config/jwt";
 
 jest.mock("../config/jwt");
@@ -8,7 +9,7 @@ jest.mock("../config/jwt");
 const mockRequest = (
   headers: Record<string, string> = {},
   params: Record<string, string> = {},
-  body: any = {}
+  body: unknown = {}
 ): Partial<Request> => ({
   headers,
   params,
@@ -72,7 +73,7 @@ describe("Auth Middleware - Autenticação e Autorização Admin", () => {
         admin: true,
       };
 
-      jest.spyOn(jwt, "verify").mockReturnValue(tokenPayload as any);
+      jest.spyOn(jwt, "verify").mockReturnValue(tokenPayload as unknown as JwtPayload);
 
       const req = mockRequest({ authorization: "Bearer valid.token.here" }) as Request;
       const res = mockResponse() as Response;
@@ -84,7 +85,7 @@ describe("Auth Middleware - Autenticação e Autorização Admin", () => {
     });
 
     it("5. Rejeita token que retorna string (inválido)", () => {
-      jest.spyOn(jwt, "verify").mockReturnValue("string-token" as any);
+      jest.spyOn(jwt, "verify").mockReturnValue("string-token");
 
       const req = mockRequest({ authorization: "Bearer token" }) as Request;
       const res = mockResponse() as Response;
@@ -211,7 +212,7 @@ describe("Auth Middleware - Autenticação e Autorização Admin", () => {
         admin: true,
       };
 
-      jest.spyOn(jwt, "verify").mockReturnValue(adminToken as any);
+      jest.spyOn(jwt, "verify").mockReturnValue(adminToken as unknown as JwtPayload);
 
       const req = mockRequest(
         { authorization: "Bearer admin-token" },
@@ -236,7 +237,7 @@ describe("Auth Middleware - Autenticação e Autorização Admin", () => {
         admin: false,
       };
 
-      jest.spyOn(jwt, "verify").mockReturnValue(userToken as any);
+      jest.spyOn(jwt, "verify").mockReturnValue(userToken as unknown as JwtPayload);
 
       const req = mockRequest(
         { authorization: "Bearer user-token" },
