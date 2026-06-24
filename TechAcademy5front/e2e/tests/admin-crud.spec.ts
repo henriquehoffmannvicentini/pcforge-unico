@@ -148,4 +148,113 @@ test.describe('CRUD Admin de produtos e categorias', () => {
     await page.click('button:has-text("Excluir")');
     await expect(page.locator('text=Produto excluído com sucesso.')).toBeVisible();
   });
+
+  test('criação de categoria sem nome exibe erro de validação', async ({ page }) => {
+    await page.route('**/categorias', (route) => {
+      if (route.request().method() === 'GET') {
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+        return;
+      }
+      route.continue();
+    });
+
+    await page.goto('/admin');
+    await page.click('button:has-text("Categorias")');
+    await page.click('button:has-text("Criar categoria")');
+
+    await expect(page.locator('text=Informe o nome da categoria.')).toBeVisible();
+  });
+
+  test('erro de API ao criar categoria exibe mensagem de erro', async ({ page }) => {
+    await page.route('**/categorias', (route) => {
+      if (route.request().method() === 'GET') {
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+        return;
+      }
+      if (route.request().method() === 'POST') {
+        route.fulfill({ status: 500, body: '' });
+        return;
+      }
+      route.continue();
+    });
+
+    await page.goto('/admin');
+    await page.click('button:has-text("Categorias")');
+    await page.fill('input[name="nome"]', 'Categoria Teste');
+    await page.fill('textarea[name="descricao"]', 'Descrição teste');
+    await page.click('button:has-text("Criar categoria")');
+
+    await expect(page.locator('.admin-error')).toBeVisible();
+  });
+
+  test('erro de API ao excluir categoria exibe mensagem de erro', async ({ page }) => {
+    const categoria = { id_categoria: 99, nome: 'Categoria Existente', descricao: 'Desc' };
+
+    await page.route('**/categorias', (route) => {
+      if (route.request().method() === 'GET') {
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([categoria]) });
+        return;
+      }
+      route.continue();
+    });
+
+    await page.route('**/categorias/*', (route) => {
+      if (route.request().method() === 'DELETE') {
+        route.fulfill({ status: 500, body: '' });
+        return;
+      }
+      route.continue();
+    });
+
+    await page.goto('/admin');
+    await page.click('button:has-text("Categorias")');
+    await page.click('button:has-text("Excluir")');
+
+    await expect(page.locator('.admin-error')).toBeVisible();
+  });
+
+  test('criação de produto sem campos obrigatórios exibe erro de validação', async ({ page }) => {
+    await page.route('**/categorias', (route) => {
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ id_categoria: 1, nome: 'Placas de vídeo' }]) });
+    });
+    await page.route('**/produtos', (route) => {
+      if (route.request().method() === 'GET') {
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+        return;
+      }
+      route.continue();
+    });
+
+    await page.goto('/admin');
+    await page.click('button:has-text("Criar produto")');
+
+    await expect(page.locator('text=Preencha nome, preço e categoria.')).toBeVisible();
+  });
+
+  test('erro de API ao criar produto exibe mensagem de erro', async ({ page }) => {
+    await page.route('**/categorias', (route) => {
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ id_categoria: 1, nome: 'Placas de vídeo' }]) });
+    });
+    await page.route('**/produtos', async (route) => {
+      if (route.request().method() === 'GET') {
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+        return;
+      }
+      if (route.request().method() === 'POST') {
+        route.fulfill({ status: 500, body: '' });
+        return;
+      }
+      route.continue();
+    });
+
+    await page.goto('/admin');
+    await page.fill('input[name="nome"]', 'Produto Teste');
+    await page.fill('textarea[name="descricao"]', 'Descrição');
+    await page.fill('input[name="preco"]', '1000');
+    await page.selectOption('select[name="id_categoria"]', '1');
+    await page.fill('input[name="estoque"]', '5');
+    await page.click('button:has-text("Criar produto")');
+
+    await expect(page.locator('.admin-error')).toBeVisible();
+  });
 });
