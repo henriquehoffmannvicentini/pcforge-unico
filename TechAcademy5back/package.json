@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node-dev --respawn src/index.ts",
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
-    "prepare": "husky install",
+    "prepare": "husky install || true",
     "lint": "eslint --ext .ts src",
     "test": "jest",
     "test:coverage": "jest --coverage",
