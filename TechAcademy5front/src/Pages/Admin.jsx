@@ -167,9 +167,10 @@ function AbaProdutos() {
     };
     try {
       setSalvando(true);
-      if (editandoId) { await sendJson(`/produtos/${editandoId}`, "PUT", payload); setStatus("Produto atualizado com sucesso."); }
-      else { await sendJson("/produtos", "POST", payload); setStatus("Produto criado com sucesso."); }
-      limparFormulario(); await carregarDados();
+      const mensagemSucesso = editandoId ? "Produto atualizado com sucesso." : "Produto criado com sucesso.";
+      if (editandoId) { await sendJson(`/produtos/${editandoId}`, "PUT", payload); }
+      else { await sendJson("/produtos", "POST", payload); }
+      limparFormulario(); setStatus(mensagemSucesso); await carregarDados();
     } catch (err) { setErro(err.message || "Não foi possível salvar na API."); }
     finally { setSalvando(false); }
   };
@@ -368,9 +369,10 @@ function AbaCategorias() {
     const payload = { nome: form.nome.trim(), descricao: form.descricao.trim() || null };
     try {
       setSalvando(true);
-      if (editandoId) { await sendJson(`/categorias/${editandoId}`, "PUT", payload); setStatus("Categoria atualizada com sucesso."); }
-      else { await sendJson("/categorias", "POST", payload); setStatus("Categoria criada com sucesso."); }
-      limparFormulario(); await carregarCategorias();
+      const mensagemSucesso = editandoId ? "Categoria atualizada com sucesso." : "Categoria criada com sucesso.";
+      if (editandoId) { await sendJson(`/categorias/${editandoId}`, "PUT", payload); }
+      else { await sendJson("/categorias", "POST", payload); }
+      limparFormulario(); setStatus(mensagemSucesso); await carregarCategorias();
     } catch (err) { setErro(err.message || "Não foi possível salvar a categoria."); }
     finally { setSalvando(false); }
   };
@@ -524,9 +526,10 @@ function AbaUsuarios() {
     if (form.senha) payload.senha = form.senha;
     try {
       setSalvando(true);
-      if (editandoId) { await sendJson(`/clientes/${editandoId}`, "PUT", payload); setStatus("Usuário atualizado com sucesso."); }
-      else { await sendJson("/clientes", "POST", payload); setStatus("Usuário criado com sucesso."); }
-      limparFormulario(); await carregarClientes();
+      const mensagemSucesso = editandoId ? "Usuário atualizado com sucesso." : "Usuário criado com sucesso.";
+      if (editandoId) { await sendJson(`/clientes/${editandoId}`, "PUT", payload); }
+      else { await sendJson("/clientes", "POST", payload); }
+      limparFormulario(); setStatus(mensagemSucesso); await carregarClientes();
     } catch (err) {
       if (err.message.includes("409")) setErro("E-mail ou CPF já cadastrado.");
       else if (err.message.includes("400")) setErro(err.message.split(" - ")[1] || "Dados inválidos.");

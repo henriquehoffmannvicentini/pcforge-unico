@@ -11,6 +11,7 @@
 # environment files
 .env
 .env.*
+!.env.example
 
 # editor files
 .vscode
@@ -25,11 +26,14 @@ TechAcademy5back/uploads
 # Docker
 docker-compose.override.yml
 
-# local HTTPS certificate exports
+# local HTTPS certificates (do not commit private keys or certs)
 certs/*.pfx
+certs/*.key
+certs/*.crt
 
 # Build / gerados
 TechAcademy5back/dist/
 TechAcademy5back/coverage/
-TechAcademy5back/uploads/
+
+# frontend test artifacts
 TechAcademy5front/test-results/

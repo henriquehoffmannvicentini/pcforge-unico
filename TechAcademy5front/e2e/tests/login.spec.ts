@@ -1,5 +1,22 @@
 import { test, expect } from '@playwright/test';
 
+test('login com credenciais inválidas exibe mensagem de erro', async ({ page }) => {
+  await page.route('**/clientes/login', (route) => {
+    route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: JSON.stringify({ message: 'Credenciais inválidas' }),
+    });
+  });
+
+  await page.goto('/Login');
+  await page.fill('input[type="email"]', 'invalido@example.com');
+  await page.fill('input[type="password"]', 'senhaerrada');
+  await page.click('button:has-text("Entrar")');
+
+  await expect(page.locator('text=Email ou senha incorretos.')).toBeVisible();
+});
+
 test('fluxo de login funciona e atualiza header', async ({ page }) => {
   // mock da API de login
   await page.route('**/clientes/login', (route) => {

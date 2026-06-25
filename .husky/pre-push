@@ -5,7 +5,16 @@ cd TechAcademy5back || exit 1
 npm test
 RET=$?
 if [ $RET -ne 0 ]; then
-  echo "Tests failed (pre-push). Aborting push."
+  echo "Backend tests failed (pre-push). Aborting push."
+  exit $RET
+fi
+
+echo "Running pre-push: frontend E2E tests"
+cd ../TechAcademy5front || exit 1
+npm run test:e2e
+RET=$?
+if [ $RET -ne 0 ]; then
+  echo "Frontend E2E tests failed (pre-push). Aborting push."
   exit $RET
 fi
 exit 0

@@ -9,6 +9,7 @@
     "@commitlint/cli": "^18.0.0",
     "@commitlint/config-conventional": "^18.0.0",
     "@types/node": "^25.9.2",
-    "husky": "^8.0.0"
+    "husky": "^8.0.0",
+    "lint-staged": "^16.4.0"
   }
 }
