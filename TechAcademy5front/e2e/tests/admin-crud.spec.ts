@@ -62,6 +62,7 @@ test.describe('CRUD Admin de produtos e categorias', () => {
     await page.click('button:has-text("Criar categoria")');
 
     await expect(page.locator('text=Categoria criada com sucesso.')).toBeVisible();
+    await expect(page.getByText('Monitores', { exact: true })).toBeVisible();
     await page.click('button:has-text("Editar")');
     await expect(page.locator('input[name="nome"][value="Monitores"]')).toBeVisible();
 
@@ -72,6 +73,7 @@ test.describe('CRUD Admin de produtos e categorias', () => {
     await expect(page.locator('text=Categoria atualizada com sucesso.')).toBeVisible();
     await page.click('button:has-text("Excluir")');
     await expect(page.locator('text=Categoria excluída com sucesso.')).toBeVisible();
+    await expect(page.getByText('Monitores Atualizados', { exact: true })).not.toBeVisible();
   });
 
   test('CRUD de produtos completo', async ({ page }) => {
@@ -137,6 +139,7 @@ test.describe('CRUD Admin de produtos e categorias', () => {
     await page.click('button:has-text("Criar produto")');
 
     await expect(page.locator('text=Produto criado com sucesso.')).toBeVisible();
+    await expect(page.locator('text=RTX 4070')).toBeVisible();
     await page.click('button:has-text("Editar")');
     await expect(page.locator('input[name="nome"][value="RTX 4070"]')).toBeVisible();
 
@@ -147,6 +150,7 @@ test.describe('CRUD Admin de produtos e categorias', () => {
 
     await page.click('button:has-text("Excluir")');
     await expect(page.locator('text=Produto excluído com sucesso.')).toBeVisible();
+    await expect(page.locator('text=RTX 4070 Super')).not.toBeVisible();
   });
 
   test('criação de categoria sem nome exibe erro de validação', async ({ page }) => {
