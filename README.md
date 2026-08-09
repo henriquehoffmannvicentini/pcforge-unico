@@ -213,4 +213,4 @@ Cliente ──1:N── Endereco
 
 ## Autores
 
-Desenvolvido em dupla por [Henrique Hoffmann Vicentini](https://github.com/henriquehoffmannvicentini) e [João](https://github.com/SEU-USUARIO).
+Desenvolvido em dupla por [Henrique Hoffmann Vicentini](https://github.com/henriquehoffmannvicentini) e [João](https://github.com/JoaoVitorMcz).
