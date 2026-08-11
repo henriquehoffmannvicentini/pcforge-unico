@@ -1,6 +1,4 @@
-import dotenv from "dotenv";
 
-dotenv.config({ path: ".env" });
 
 export interface TokenPayload {
   id_cliente: number;

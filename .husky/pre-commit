@@ -1,21 +1,30 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# Run lint-staged to auto-fix and validate staged files before commit
+echo "🔍 Pre-commit: verificando arquivos staged com lint-staged..."
 npx --no-install lint-staged
+RET=$?
+if [ $RET -ne 0 ]; then
+  echo "❌ Lint-staged falhou. Corrija os erros antes de commitar."
+  exit $RET
+fi
 
-echo "Running pre-commit: backend lint and tests"
+echo "🔍 Pre-commit: executando lint do backend..."
 cd TechAcademy5back || exit 1
 npm run lint
 RET=$?
 if [ $RET -ne 0 ]; then
-  echo "Lint failed (pre-commit). Aborting commit."
+  echo "❌ Lint do backend falhou. Corrija os erros antes de commitar."
   exit $RET
 fi
+
+echo "🔍 Pre-commit: executando testes do backend..."
 npm test
 RET=$?
 if [ $RET -ne 0 ]; then
-  echo "Tests failed (pre-commit). Aborting commit."
+  echo "❌ Testes do backend falharam. Corrija os testes antes de commitar."
   exit $RET
 fi
+
+echo "✅ Pre-commit concluído com sucesso."
 exit 0
